@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>typing again</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app" class="container">
+        <div class="title">
+            <h1>Typing Game</h1>
+        </div>
+        <button class="startButton" v-if="startFlg!=true" @click="startGame">START</button>
+        <div class="clear" v-if="current_question_counts==question_length">Clear!</div>
+        <div v-if="startFlg">
+            <div class="question mb-20" v-if="current_question_counts!=question_length">{{ current_question }}</div>
+            <div class="enterWrapper mb-20">
+                <input id="typeForm" type="text" class="enter" v-model="typeBox">
+            </div>
+            <div class="gaugeWrapper mb-20">
+                <div :style="styleObject" class="gauge"></div>
+            </div>
+            <div class="gaugeNumber mb-20">{{ current_question_counts }}/{{ question_length }}</div>
+        </div>
+        <div v-if="current_question_counts==question_length">
+            <div>{{ Math.floor((end-start)/1000) }}秒</div>
+        </div>
+    </div>
+    <script>
+        new Vue({
+            el:"#app",
+            data:{
+                startFlg:"",
+                questions:[
+                    'hokkaido',
+                    'aomori',
+                    'iwate',
+                    'miyagi',
+                    'akita',
+                    'yamagata',
+                    'fukushima',
+                    'ibaraki',
+                    'tochigi',
+                    'gunma',
+                    'saitama',
+                    'chiba',
+                    'tokyo',
+                    'kanagawa',
+                    'niigata',
+                    'toyama',
+                    'ishikawa',
+                    'fukui',
+                    'yamanashi',
+                    'nagano',
+                    'gifu',
+                    'shizuoka',
+                    'aichi',
+                    'mie',
+                    'shiga',
+                    'kyoto',
+                    'osaka',
+                    'hyogo',
+                    'nara',
+                    'wakayama',
+                    'tottori',
+                    'shimane',
+                    'okayama',
+                    'hiroshima',
+                    'yamaguchi',
+                    'tokushima',
+                    'kagawa',
+                    'ehime',
+                    'kochi',
+                    'fukuoka',
+                    'saga',
+                    'nagasaki',
+                    'kumamoto',
+                    'oita',
+                    'miyazaki',
+                    'kagoshima',
+                    'okinawa',
+                ],
+                typeBox:"",
+                current_question:"",
+                question_counts:0,
+                current_question_counts:0,
+                question_length:10,
+                start:0,
+                end:0,
+                rand:0
+            },
+            computed:{
+                styleObject:function(){
+                  width = 10*this.current_question_counts+"%"
+                  if(this.current_question_counts==this.question_length){
+                    color="skyblue"
+                    this.end=Date.now()
+                  }else{
+                    color="orange"
+                  }
+                  return{
+                    'width':width,
+                    'background-color':color
+                  }
+                }
+            },
+            methods:{
+                startGame:function(){
+                    this.startFlg=true
+                    this.$nextTick(function(){
+                        document.getElementById('typeForm').focus()
+                    })
+                    this.start=Date.now()
+                }
+            },
+            mounted:function(){
+                this.question_counts=this.questions.length
+                this.rand=Math.floor(Math.random()*this.question_counts)
+                this.current_question=this.questions[this.rand]
+            },
+            watch:{
+                typeBox:function(e){
+                    if(e==this.current_question){
+                        this.questions.splice(this.rand,1)
+                        this.rand=Math.floor(Math.random()*(this.question_counts-this.current_question_counts-1))
+                        this.current_question=this.questions[this.rand]
+                        this.typeBox=""
+                        this.current_question_counts=this.current_question_counts+1
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+</html>
